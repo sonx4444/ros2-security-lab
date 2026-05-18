@@ -69,7 +69,7 @@ ros2 run turtlesim turtlesim_node
 ```
 A window should pop up showing a blue background with a turtle in the middle. This is the turtlesim simulator, which provides a simple environment for learning ROS2 concepts.
 
-![alt text](screenshots/image.png)
+![alt text](images/image.png)
 
 Open Terminal 2 and run:
 
@@ -78,7 +78,7 @@ ros2 run turtlesim turtle_teleop_key
 ```
 This will allow you to control the turtle using your keyboard. Use the arrow keys to move the turtle around the screen.
 
-![alt text](screenshots/image-1.png)
+![alt text](images/image-1.png)
 
 ## Basic ROS2 Concepts
 
@@ -250,7 +250,7 @@ ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist \
 
 This command publishes a velocity command of type `geometry_msgs/msg/Twist` to the `/turtle1/cmd_vel` topic, which causes the turtle to move forward and rotate at the same time, drawing a circle.
 
-![alt text](screenshots/image-2.png)
+![alt text](images/image-2.png)
 
 
 ```bash
@@ -258,7 +258,7 @@ ros2 service call /reset std_srvs/srv/Empty "{}"
 ```
 This command calls the `/reset` service of the `/turtlesim` node, which resets the turtle to its initial position and orientation.
 
-![alt text](screenshots/image-3.png)
+![alt text](images/image-3.png)
 
 ### Data Flow Summary
 

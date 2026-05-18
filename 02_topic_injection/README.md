@@ -87,7 +87,7 @@ ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist \
 "{linear: {x: 5.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"
 ```
 
-![alt text](screenshots/image.png)
+![alt text](images/image.png)
 
 Testing rotation only:
 
@@ -96,7 +96,7 @@ ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist \
 "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 3.0}}"
 ```
 
-![alt text](screenshots/image-1.png)
+![alt text](images/image-1.png)
 
 Testing the stop command:
 
@@ -105,7 +105,7 @@ ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist \
 "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"
 ```
 
-![alt text](screenshots/image-2.png)
+![alt text](images/image-2.png)
 
 The turtle moved without keyboard input from the legitimate teleop node.
 
@@ -118,7 +118,7 @@ ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist \
 "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 5.0}}"
 ```
 
-![alt text](screenshots/video.mp4)
+![alt text](images/video.mp4)
 
 The turtle may rotate even while the user tries to control it.
 
@@ -169,7 +169,7 @@ ros2 service call /spawn turtlesim/srv/Spawn \
 "{x: 2.0, y: 2.0, theta: 0.0, name: 'evil_turtle'}"
 ```
 
-![alt text](screenshots/image-3.png)
+![alt text](images/image-3.png)
 
 
 Now, list the topics again:
