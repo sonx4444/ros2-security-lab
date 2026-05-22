@@ -107,7 +107,9 @@ ros2 run cmd_vel_attacker attacker
 
 The attacker node can no longer control the turtle because SROS2 security is enabled and the attacker has no valid security enclave.
 
-![alt text](images/video-1.mp4)
+[![Attacker cannot control the secure turtlesim without a valid enclave](images/video-1.gif)](images/video-1.mp4)
+
+[Open the MP4 recording](images/video-1.mp4)
 
 ### Test Attacker WITH Security but No Key
 
@@ -147,7 +149,9 @@ Result: The `/cmd_vel_attacker` is added to the keystore.
 ros2 run cmd_vel_attacker attacker --ros-args --enclave /cmd_vel_attacker
 ```
 
-![alt text](images/video-2.mp4)
+[![Authenticated attacker can control the turtle without strict permissions](images/video-2.gif)](images/video-2.mp4)
+
+[Open the MP4 recording](images/video-2.mp4)
 
 Because we haven't configured strict authorization policies yet (DDS-Security permissions), the attacker can now control the turtle simply by having a valid key!
 

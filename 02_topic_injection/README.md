@@ -118,7 +118,9 @@ ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist \
 "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 5.0}}"
 ```
 
-![alt text](images/video.mp4)
+[![Attacker repeatedly publishing movement commands](images/video.gif)](images/video.mp4)
+
+[Open the MP4 recording](images/video.mp4)
 
 The turtle may rotate even while the user tries to control it.
 
