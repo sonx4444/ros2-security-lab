@@ -62,7 +62,7 @@ def main():
     parser.add_argument("--angular-z", type=float, default=2.0, help="Rotational velocity")
     parser.add_argument("--interval", type=float, default=0.5, help="Publish interval in seconds")
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     rclpy.init()
 

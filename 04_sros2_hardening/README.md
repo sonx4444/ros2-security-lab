@@ -147,7 +147,7 @@ Result: The `/cmd_vel_attacker` is added to the keystore.
 ros2 run cmd_vel_attacker attacker --ros-args --enclave /cmd_vel_attacker
 ```
 
-![alt text](video-2.mp4)
+![alt text](images/video-2.mp4)
 
 Because we haven't configured strict authorization policies yet (DDS-Security permissions), the attacker can now control the turtle simply by having a valid key!
 
@@ -180,3 +180,115 @@ The `/teleop_turtle` enclave should only be allowed to publish the minimum requi
 - Reject commands above safe speed limits
 - Require command source validation
 - Implement watchdog timeouts (stop moving if legimate commands stop arriving)
+
+
+### Access Control (DDS-Security Permissions)
+
+Inspect the current permissions auto-generated for the attacker node:
+
+```bash
+cat sros2_keystore/enclaves/cmd_vel_attacker/permissions.xml
+```
+
+```xml
+...
+        <publish>
+          <topics>
+            <topic>rq/*/_action/cancel_goalRequest</topic>
+            <topic>rq/*/_action/get_resultRequest</topic>
+            <topic>rq/*/_action/send_goalRequest</topic>
+            <topic>rq/*Request</topic>
+            <topic>rr/*/_action/cancel_goalReply</topic>
+            <topic>rr/*/_action/get_resultReply</topic>
+            <topic>rr/*/_action/send_goalReply</topic>
+            <topic>rt/*/_action/feedback</topic>
+            <topic>rt/*/_action/status</topic>
+            <topic>rr/*Reply</topic>
+            <topic>rt/*</topic>
+          </topics>
+        </publish>
+        <subscribe>
+          <topics>
+            <topic>rq/*/_action/cancel_goalRequest</topic>
+            <topic>rq/*/_action/get_resultRequest</topic>
+            <topic>rq/*/_action/send_goalRequest</topic>
+            <topic>rq/*Request</topic>
+            <topic>rr/*/_action/cancel_goalReply</topic>
+            <topic>rr/*/_action/get_resultReply</topic>
+            <topic>rr/*/_action/send_goalReply</topic>
+            <topic>rt/*/_action/feedback</topic>
+            <topic>rt/*/_action/status</topic>
+            <topic>rr/*Reply</topic>
+            <topic>rt/*</topic>
+          </topics>
+        </subscribe>
+...
+```
+
+### Create a Custom Policy File
+
+```bash
+cd ~/projects/ros2-security-lab/04_sros2_hardening
+
+cat > attacker_policy.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<policy version="0.2.0">
+  <enclaves>
+    <enclave path="/cmd_vel_attacker">
+      <profiles>
+        <profile ns="/" node="cmd_vel_attacker">
+          <topics publish="ALLOW" subscribe="ALLOW">
+            <topic>/rosout</topic>
+          </topics>
+        </profile>
+      </profiles>
+    </enclave>
+  </enclaves>
+</policy>
+EOF
+```
+
+
+Re-sign permissions:
+
+```bash
+ros2 security create_permission \
+  sros2_keystore \
+  /cmd_vel_attacker \
+  attacker_policy.xml
+```
+
+Now, read permissions again:
+
+```xml
+...
+        <publish>
+          <topics>
+            <topic>rt/rosout</topic>
+          </topics>
+        </publish>
+        <subscribe>
+          <topics>
+            <topic>rt/rosout</topic>
+          </topics>
+        </subscribe>
+...
+```
+
+### Observe the Restricted Node Behavior
+
+We intentionally allowed only `/rosout`. The node will fail later when it tries to create its publisher and subscriber:
+
+```python
+self.publisher = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
+self.pose_subscriber = self.create_subscription(Pose, "/turtle1/pose", ...)
+```
+
+> **Note:** The restrictive policy causes the node to fail during initialization. To make the node initialize correctly without throwing errors, you would either need to allow the missing topics (e.g., parameter services) in the XML policy or update the node code to handle permission exceptions gracefully.
+
+```
+[SECURITY Error] rq/cmd_vel_attacker/describe_parametersRequest topic not found in allow rule. (./src/cpp/security/accesscontrol/Permissions.cpp:1245) -> Function check_create_datareader
+[SECURITY Error] Error checking creation of local reader  (rq/cmd_vel_attacker/describe_parametersRequest topic not found in allow rule. (./src/cpp/security/accesscontrol/Permissions.cpp:1245))
+ -> Function get_datareader_sec_attributes
+[DATA_READER Error] Problem creating associated Reader -> Function enable
+```
